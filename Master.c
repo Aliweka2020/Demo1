@@ -26,7 +26,7 @@ int main(void)
 	Master_init();
     while(1)
     {
-       
+       // Local Uodate 2
 			Master_send ('D');
 			_delay_ms(1000);
 			Master_send (11);
