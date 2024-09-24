@@ -12,7 +12,8 @@
 
 #define MY_TCCR0   * ((volatile unsigned char *) 0x53)
 
-// #define MY_OCR0 
+ #define MY_OCR0  * ((volatile unsigned char *) 0x5C)
+ #define  MY_TIMSK   * ((volatile unsigned char *) 0x59)
 
 
 #endif /* TIMER0_PRIVATE_H_ */

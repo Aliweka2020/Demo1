@@ -18,10 +18,10 @@
 
 //Clock Select
 #define Clock_1  0
-#define Clock_8  0
-#define Clock_64  0
-#define Clock_256  0
-#define Clock_1024  0
+#define Clock_8  1
+#define Clock_64  2
+#define Clock_256  3
+#define Clock_1024  4
 
 //Compare Output Mode
 #define Inverting     0
