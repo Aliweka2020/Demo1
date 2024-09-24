@@ -37,6 +37,7 @@ SUBDIRS :=
 
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS +=  \
+../ADC.c \
 ../GccApplication1.c \
 ../LCD.c
 
@@ -48,18 +49,22 @@ ASM_SRCS +=
 
 
 OBJS +=  \
+ADC.o \
 GccApplication1.o \
 LCD.o
 
 OBJS_AS_ARGS +=  \
+ADC.o \
 GccApplication1.o \
 LCD.o
 
 C_DEPS +=  \
+ADC.d \
 GccApplication1.d \
 LCD.d
 
 C_DEPS_AS_ARGS +=  \
+ADC.d \
 GccApplication1.d \
 LCD.d
 
@@ -77,6 +82,8 @@ LINKER_SCRIPT_DEP+=
 
 
 # AVR32/GNU C Compiler
+
+
 
 
 

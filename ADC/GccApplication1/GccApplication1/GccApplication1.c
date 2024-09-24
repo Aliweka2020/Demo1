@@ -9,22 +9,10 @@
 #include <avr/io.h>
 #include <util/delay.h>
 #include "LCD.h"
-void ADC_init()
-{
-	DDRA &= ~(1<<0);
-	ADMUX |= (1<<ADLAR);
-	ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS2);
-}
-int ADC_Read()
-{
-	ADCSRA |= (1<<ADSC);
-	while ( (ADCSRA & (1<<ADIF) ) ==0);
-	ADCSRA |= (1<<ADIF);
-	return ((int) (ADCH));
-}
+#include "ADC.h"
 int main(void)
 {
-	
+	DDRB |= (1<<3);
 	LCD_init();
 	ADC_init();
 	_delay_ms(35);
@@ -38,8 +26,18 @@ int main(void)
 	while(1)
 	   {
         LCD_send_cmd(0x80);
-		LCD_send_string("ADC = ");
-		int temp = ADC_Read();
+		LCD_send_string("Temp = ");
+		int temp = ADC_Read(0);
+		temp  = temp * 500 /256;
+		
+		if (temp > 30)
+		{
+			PORTB |=(1<<3);
+		}
+		else
+		{
+			PORTB &= ~(1<<3);
+		}
 		int n =  temp/100;
 		LCD_send_data(n + 0x30);
 		temp = temp %100;
