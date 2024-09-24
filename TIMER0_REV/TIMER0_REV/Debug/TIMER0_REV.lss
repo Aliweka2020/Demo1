@@ -7,21 +7,19 @@ Idx Name          Size      VMA       LMA       File off  Algn
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
   1 .comment      00000030  00000000  00000000  00000110  2**0
                   CONTENTS, READONLY
-  2 .debug_aranges 00000048  00000000  00000000  00000140  2**0
+  2 .debug_aranges 00000058  00000000  00000000  00000140  2**0
                   CONTENTS, READONLY, DEBUGGING
-  3 .debug_info   0000020f  00000000  00000000  00000188  2**0
+  3 .debug_info   000001b6  00000000  00000000  00000198  2**0
                   CONTENTS, READONLY, DEBUGGING
-  4 .debug_abbrev 000001a6  00000000  00000000  00000397  2**0
+  4 .debug_abbrev 0000014b  00000000  00000000  0000034e  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_line   00000217  00000000  00000000  0000053d  2**0
+  5 .debug_line   000001b6  00000000  00000000  00000499  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_frame  00000058  00000000  00000000  00000754  2**2
+  6 .debug_frame  00000078  00000000  00000000  00000650  2**2
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_str    0000019e  00000000  00000000  000007ac  2**0
+  7 .debug_str    00000165  00000000  00000000  000006c8  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_loc    00000024  00000000  00000000  0000094a  2**0
-                  CONTENTS, READONLY, DEBUGGING
-  9 .debug_ranges 00000028  00000000  00000000  0000096e  2**0
+  8 .debug_ranges 00000038  00000000  00000000  0000082d  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -56,7 +54,7 @@ Disassembly of section .text:
   5a:	d8 e0       	ldi	r29, 0x08	; 8
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
-  60:	0e 94 43 00 	call	0x86	; 0x86 <main>
+  60:	0e 94 50 00 	call	0xa0	; 0xa0 <main>
   64:	0c 94 5c 00 	jmp	0xb8	; 0xb8 <_exit>
 
 00000068 <__bad_interrupt>:
@@ -104,53 +102,56 @@ void Timer0_SetOCR(unsigned char duty)
   82:	8c bf       	out	0x3c, r24	; 60
   84:	08 95       	ret
 
-00000086 <main>:
+00000086 <ADC_init>:
 #include <util/delay.h>
 #include <avr/io.h>
 #include "TIMER0_Interface.h"
+void ADC_init()
+{
+	DDRA &= ~(1<<0);
+  86:	d0 98       	cbi	0x1a, 0	; 26
+	ADMUX |= (1<<ADLAR);
+  88:	3d 9a       	sbi	0x07, 5	; 7
+	ADCSRA |= (1<<ADEN) | (1<<ADPS0) | (1<<ADPS2);
+  8a:	86 b1       	in	r24, 0x06	; 6
+  8c:	85 68       	ori	r24, 0x85	; 133
+  8e:	86 b9       	out	0x06, r24	; 6
+  90:	08 95       	ret
+
+00000092 <ADC_Read>:
+}
+int ADC_Read()
+{
+	ADCSRA |= (1<<ADSC);
+  92:	36 9a       	sbi	0x06, 6	; 6
+	while ( (ADCSRA & (1<<ADIF) ) ==0);
+  94:	34 9b       	sbis	0x06, 4	; 6
+  96:	fe cf       	rjmp	.-4      	; 0x94 <ADC_Read+0x2>
+	ADCSRA |= (1<<ADIF);
+  98:	34 9a       	sbi	0x06, 4	; 6
+	return ((int) (ADCH));
+  9a:	85 b1       	in	r24, 0x05	; 5
+}
+  9c:	90 e0       	ldi	r25, 0x00	; 0
+  9e:	08 95       	ret
+
+000000a0 <main>:
 int main(void)
 {
+	ADC_init();
+  a0:	0e 94 43 00 	call	0x86	; 0x86 <ADC_init>
 	Timer0_init();
-  86:	0e 94 36 00 	call	0x6c	; 0x6c <Timer0_init>
+  a4:	0e 94 36 00 	call	0x6c	; 0x6c <Timer0_init>
 	Timer0_SetOCR(1);
-  8a:	81 e0       	ldi	r24, 0x01	; 1
-  8c:	0e 94 41 00 	call	0x82	; 0x82 <Timer0_SetOCR>
+  a8:	81 e0       	ldi	r24, 0x01	; 1
+  aa:	0e 94 41 00 	call	0x82	; 0x82 <Timer0_SetOCR>
     while(1)
     {
-		for (int i=0;i<255;i++)
-  90:	c0 e0       	ldi	r28, 0x00	; 0
-  92:	d0 e0       	ldi	r29, 0x00	; 0
-  94:	00 e0       	ldi	r16, 0x00	; 0
-  96:	10 e0       	ldi	r17, 0x00	; 0
-		{
-			Timer0_SetOCR(i);
-  98:	8c 2f       	mov	r24, r28
-  9a:	0e 94 41 00 	call	0x82	; 0x82 <Timer0_SetOCR>
-	#else
-		//round up by default
-		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
-	#endif
-
-	__builtin_avr_delay_cycles(__ticks_dc);
-  9e:	87 ea       	ldi	r24, 0xA7	; 167
-  a0:	91 e6       	ldi	r25, 0x61	; 97
-  a2:	01 97       	sbiw	r24, 0x01	; 1
-  a4:	f1 f7       	brne	.-4      	; 0xa2 <main+0x1c>
-  a6:	00 c0       	rjmp	.+0      	; 0xa8 <main+0x22>
-  a8:	00 00       	nop
-{
-	Timer0_init();
-	Timer0_SetOCR(1);
-    while(1)
-    {
-		for (int i=0;i<255;i++)
-  aa:	21 96       	adiw	r28, 0x01	; 1
-  ac:	cf 3f       	cpi	r28, 0xFF	; 255
-  ae:	d1 05       	cpc	r29, r1
-  b0:	9c f3       	brlt	.-26     	; 0x98 <main+0x12>
-  b2:	c0 2f       	mov	r28, r16
-  b4:	d1 2f       	mov	r29, r17
-  b6:	f0 cf       	rjmp	.-32     	; 0x98 <main+0x12>
+		//int x=ADC_Read();
+		Timer0_SetOCR(ADC_Read());
+  ae:	0e 94 49 00 	call	0x92	; 0x92 <ADC_Read>
+  b2:	0e 94 41 00 	call	0x82	; 0x82 <Timer0_SetOCR>
+  b6:	fb cf       	rjmp	.-10     	; 0xae <main+0xe>
 
 000000b8 <_exit>:
   b8:	f8 94       	cli

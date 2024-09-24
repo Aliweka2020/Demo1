@@ -228,8 +228,14 @@ END GROUP
  .text.Timer0_SetOCR
                 0x00000082        0x4 TIMER0.o
                 0x00000082                Timer0_SetOCR
- .text.main     0x00000086       0x32 TIMER0_REV.o
-                0x00000086                main
+ .text.ADC_init
+                0x00000086        0xc TIMER0_REV.o
+                0x00000086                ADC_init
+ .text.ADC_Read
+                0x00000092        0xe TIMER0_REV.o
+                0x00000092                ADC_Read
+ .text.main     0x000000a0       0x18 TIMER0_REV.o
+                0x000000a0                main
                 0x000000b8                . = ALIGN (0x2)
  *(.fini9)
  .fini9         0x000000b8        0x0 c:/program files (x86)/atmel/atmel toolchain/avr8 gcc/native/3.4.1061/avr8-gnu-toolchain/bin/../lib/gcc/avr/4.8.1/avr5\libgcc.a(_exit.o)
@@ -342,46 +348,45 @@ END GROUP
 .debug_sfnames
  *(.debug_sfnames)
 
-.debug_aranges  0x00000000       0x48
+.debug_aranges  0x00000000       0x58
  *(.debug_aranges)
  .debug_aranges
                 0x00000000       0x28 TIMER0.o
  .debug_aranges
-                0x00000028       0x20 TIMER0_REV.o
+                0x00000028       0x30 TIMER0_REV.o
 
 .debug_pubnames
  *(.debug_pubnames)
 
-.debug_info     0x00000000      0x20f
+.debug_info     0x00000000      0x1b6
  *(.debug_info .gnu.linkonce.wi.*)
  .debug_info    0x00000000       0xa6 TIMER0.o
- .debug_info    0x000000a6      0x169 TIMER0_REV.o
+ .debug_info    0x000000a6      0x110 TIMER0_REV.o
 
-.debug_abbrev   0x00000000      0x1a6
+.debug_abbrev   0x00000000      0x14b
  *(.debug_abbrev)
  .debug_abbrev  0x00000000       0x76 TIMER0.o
- .debug_abbrev  0x00000076      0x130 TIMER0_REV.o
+ .debug_abbrev  0x00000076       0xd5 TIMER0_REV.o
 
-.debug_line     0x00000000      0x217
+.debug_line     0x00000000      0x1b6
  *(.debug_line .debug_line.* .debug_line_end)
  .debug_line    0x00000000       0xbf TIMER0.o
- .debug_line    0x000000bf      0x158 TIMER0_REV.o
+ .debug_line    0x000000bf       0xf7 TIMER0_REV.o
 
-.debug_frame    0x00000000       0x58
+.debug_frame    0x00000000       0x78
  *(.debug_frame)
  .debug_frame   0x00000000       0x34 TIMER0.o
- .debug_frame   0x00000034       0x24 TIMER0_REV.o
+ .debug_frame   0x00000034       0x44 TIMER0_REV.o
 
-.debug_str      0x00000000      0x19e
+.debug_str      0x00000000      0x165
  *(.debug_str)
  .debug_str     0x00000000      0x13c TIMER0.o
                                 0x170 (size before relaxing)
- .debug_str     0x0000013c       0x62 TIMER0_REV.o
-                                0x1b7 (size before relaxing)
+ .debug_str     0x0000013c       0x29 TIMER0_REV.o
+                                0x186 (size before relaxing)
 
-.debug_loc      0x00000000       0x24
+.debug_loc
  *(.debug_loc)
- .debug_loc     0x00000000       0x24 TIMER0_REV.o
 
 .debug_macinfo
  *(.debug_macinfo)
@@ -401,10 +406,10 @@ END GROUP
 .debug_pubtypes
  *(.debug_pubtypes)
 
-.debug_ranges   0x00000000       0x28
+.debug_ranges   0x00000000       0x38
  *(.debug_ranges)
  .debug_ranges  0x00000000       0x18 TIMER0.o
- .debug_ranges  0x00000018       0x10 TIMER0_REV.o
+ .debug_ranges  0x00000018       0x20 TIMER0_REV.o
 
 .debug_macro
  *(.debug_macro)
